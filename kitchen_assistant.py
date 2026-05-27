@@ -19,7 +19,7 @@ def load_pantry_from_csv(filepath: str) -> list[dict]:
         reader = csv.DictReader(f)
         for row in reader:
             pantry.append({
-                "ingredient": row["ingredient"].strip(),
+                "ingredients": row["ingredients"].strip(),
                 "quantity": row.get("quantity", "").strip(),
                 "expiry": row.get("expiry_date", "").strip(),
             })
@@ -41,7 +41,7 @@ def enter_pantry_manually() -> list[dict]:
             print("  Please enter at least an ingredient name.")
             continue
         pantry.append({
-            "ingredient": parts[0],
+            "ingredients": parts[0],
             "quantity": parts[1] if len(parts) > 1 else "",
             "expiry": parts[2] if len(parts) > 2 else "",
         })
@@ -54,7 +54,7 @@ def format_pantry_for_prompt(pantry: list[dict]) -> str:
     today = date.today()
     lines = []
     for item in pantry:
-        line = f"- {item['ingredient']}"
+        line = f"- {item['ingredients']}"
         if item["quantity"]:
             line += f" ({item['quantity']})"
         if item["expiry"]:
@@ -90,7 +90,7 @@ def build_system_prompt(pantry: list[dict], strategy: str = "zero-shot") -> str:
     """
     pantry_str = format_pantry_for_prompt(pantry)
     ingredient_names = ", ".join(
-        [item["ingredient"].lower() for item in pantry]
+        [item["ingredients"].lower() for item in pantry]
     )
 
     base_instruction = f"""You are a kitchen assistant helping a student reduce food waste.
